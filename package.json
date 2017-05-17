@@ -8,7 +8,7 @@
     "potools": "bin/potools"
   },
   "scripts": {
-    "test": "jest",
+    "test": "xo && jest",
     "test-watch": "jest --watch",
     "test-coverage": "jest --coverage"
   },
@@ -32,6 +32,26 @@
   },
   "devDependencies": {
     "jest": "^20.0.1",
-    "sinon": "^2.2.0"
+    "sinon": "^2.2.0",
+    "xo": "^0.18.2"
+  },
+  "xo": {
+    "space": "true",
+    "globals": [
+      "beforeEach",
+      "describe",
+      "expect",
+      "it"
+    ],
+    "rules": {
+      "arrow-parens": ["error", "always"],
+      "comma-dangle": ["error", {
+        "arrays": "always-multiline",
+        "objects": "always-multiline",
+        "imports": "always-multiline",
+        "exports": "always-multiline",
+        "functions": "ignore"
+      }]
+    }
   }
 }

@@ -1,15 +1,15 @@
 const splitText = require('../src/').splitText;
 
-describe('splitText()', function() {
-  it('splits placeholders', function() {
+describe('splitText()', () => {
+  it('splits placeholders', () => {
     expect(splitText('foo %(whatever)s'))
       .toEqual([
         {value: 'foo ', type: 'text'},
-        {value: '%(whatever)s', type: 'placeholder'}
+        {value: '%(whatever)s', type: 'placeholder'},
       ]);
   });
 
-  it('still returns text without placeholders', function() {
+  it('still returns text without placeholders', () => {
     expect(splitText('foo bar'))
       .toEqual([
         {value: 'foo bar', type: 'text'},

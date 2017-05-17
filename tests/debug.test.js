@@ -1,18 +1,18 @@
-const debugCommand = require('../src/').debugCommand;
 const sinon = require('sinon');
+const debugCommand = require('../src/').debugCommand;
 
 describe('debugCommand()', () => {
   let fakeChalk;
   let fakeConsole;
-  let faleProcess;
+  let fakeProcess;
 
   beforeEach(() => {
     fakeProcess = {
       exit: sinon.stub(),
       stdout: {
         write: sinon.stub(),
-      }
-    }
+      },
+    };
 
     fakeChalk = {
       red: sinon.stub(),
@@ -24,7 +24,7 @@ describe('debugCommand()', () => {
   });
 
   it('should call process.exit if pot file is invalid', () => {
-    return debugCommand({ potfile: 'whatever', format: 'unicode' }, { _chalk: fakeChalk, _process: fakeProcess, _console: fakeConsole })
+    return debugCommand({potfile: 'whatever', format: 'unicode'}, {_chalk: fakeChalk, _process: fakeProcess, _console: fakeConsole})
       .then(() => {
         sinon.assert.calledWith(fakeProcess.exit, 1);
         sinon.assert.calledWithMatch(fakeChalk.red, 'ENOENT');
@@ -32,7 +32,7 @@ describe('debugCommand()', () => {
   });
 
   it('should output unicode output', () => {
-    return debugCommand({ potfile: './tests/fixtures/source.pot', format: 'unicode', output: 'stdout' }, { _chalk: fakeChalk, _process: fakeProcess, _console: fakeConsole })
+    return debugCommand({potfile: './tests/fixtures/source.pot', format: 'unicode', output: 'stdout'}, {_chalk: fakeChalk, _process: fakeProcess, _console: fakeConsole})
       .then(() => {
         sinon.assert.neverCalledWith(fakeProcess.exit, 1);
         sinon.assert.calledWithMatch(fakeProcess.stdout.write, 'msgstr "Ẏǿŭ ȧřḗ ȧŀřḗȧḓẏ ŀǿɠɠḗḓ īƞ."');
@@ -42,7 +42,7 @@ describe('debugCommand()', () => {
   });
 
   it('should output mirror output', () => {
-    return debugCommand({ potfile: './tests/fixtures/source.pot', format: 'mirror', output: 'stdout' }, { _chalk: fakeChalk, _process: fakeProcess, _console: fakeConsole })
+    return debugCommand({potfile: './tests/fixtures/source.pot', format: 'mirror', output: 'stdout'}, {_chalk: fakeChalk, _process: fakeProcess, _console: fakeConsole})
       .then(() => {
         sinon.assert.neverCalledWith(fakeProcess.exit, 1);
         sinon.assert.calledWithMatch(fakeProcess.stdout.write, 'msgstr ".uı pǝƃƃoʅ ʎpɐǝɹʅɐ ǝɹɐ no⅄"');
@@ -51,5 +51,3 @@ describe('debugCommand()', () => {
       });
   });
 });
-
-

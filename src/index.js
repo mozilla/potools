@@ -1,20 +1,17 @@
-const fs = require('fs');
-const path = require('path');
-
 const chalk = require('chalk');
 const htmlparser = require('htmlparser2');
 const prog = require('cli-progress');
 const PO = require('pofile');
 
 const promisify = require('promisify-node');
-poLoad = promisify(PO.load);
-
 const render = require('dom-serializer');
+
+const poLoad = promisify(PO.load);
 
 const unicodeFrom = 'ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz';
 const unicodeTo = 'ȦƁƇḒḖƑƓĦĪĴĶĿḾȠǾƤɊŘŞŦŬṼẆẊẎẐȧƀƈḓḗƒɠħīĵķŀḿƞǿƥɋřşŧŭṽẇẋẏẑ';
-const mirrorFrom = "abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789!@#$%^&*()-_=+\\|`~[{]};:'\",<.>/?";
-const mirrorTo = "ɐqɔpǝɟƃɥıɾʞʅɯuodbɹsʇnʌʍxʎz∀ԐↃᗡƎℲ⅁HIſӼ⅂WNOԀÒᴚS⊥∩ɅＭX⅄Z0123456789¡@#$%ᵥ⅋⁎)(-_=+\\|,~]}[{;:,„´>.</¿";
+const mirrorFrom = 'abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789!@#$%^&*()-_=+\\|`~[{]};:\'",<.>/?';
+const mirrorTo = 'ɐqɔpǝɟƃɥıɾʞʅɯuodbɹsʇnʌʍxʎz∀ԐↃᗡƎℲ⅁HIſӼ⅂WNOԀÒᴚS⊥∩ɅＭX⅄Z0123456789¡@#$%ᵥ⅋⁎)(-_=+\\|,~]}[{;:,„´>.</¿';
 
 // Currently matches:
 // %(placeholder)s
@@ -27,12 +24,12 @@ function splitText(input) {
   const parts = [];
   let pos = 0;
   let match;
-  while ((match = placeholderRx.exec(input)) != null) {
+  while ((match = placeholderRx.exec(input)) !== null) {
     if (pos < match.index) {
       // Push the non-matching string into the list.
       parts.push({value: input.substr(pos, match.index - pos), type: 'text'});
     }
-    // push the matching parts piece on the parts array.
+    // Push the matching parts piece on the parts array.
     parts.push({value: match[0], type: 'placeholder'});
     pos = match.index + match[0].length;
   }
@@ -44,8 +41,8 @@ function splitText(input) {
 
 function mirror(inputString) {
   let trans = '';
-  for (var i = inputString.length - 1; i >= 0; i--) {
-    let idx = mirrorFrom.indexOf(inputString.charAt(i));
+  for (let i = inputString.length - 1; i >= 0; i--) {
+    const idx = mirrorFrom.indexOf(inputString.charAt(i));
     if (idx > -1) {
       trans += mirrorTo[idx];
     } else {
@@ -57,7 +54,7 @@ function mirror(inputString) {
 
 function unicode(inputString) {
   let trans = '';
-  for (var i = 0, j = inputString.length; i < j; i++) {
+  for (let i = 0, j = inputString.length; i < j; i++) {
     const char = inputString.charAt(i);
     const idx = unicodeFrom.indexOf(char);
     if (idx > 0) {
@@ -69,11 +66,11 @@ function unicode(inputString) {
   return trans;
 }
 
-function transformText(input, { format = 'unicode' } = {}) {
+function transformText(input, {format = 'unicode'} = {}) {
   const tokens = splitText(input);
-  let string = [];
-  for (token of tokens) {
-    if (token.type == 'text') {
+  const string = [];
+  for (const token of tokens) {
+    if (token.type === 'text') {
       string.push(format === 'unicode' ? unicode(token.value) : mirror(token.value));
     } else {
       string.push(token.value);
@@ -85,7 +82,7 @@ function transformText(input, { format = 'unicode' } = {}) {
   return string.join('');
 }
 
-function wrapper(node){
+function wrapper(node) {
   return {
     name: 'wrapper',
     data: 'wrapper',
@@ -93,17 +90,18 @@ function wrapper(node){
     children: node,
     next: null,
     prev: null,
-    parent: null
+    parent: null,
   };
 }
 
-function walkAst(node, callback, finish, { reverse = false, wrap = true }) {
+function walkAst(node, callback, finish, {reverse = false, wrap = true} = {}) {
   // Based on https://github.com/jordancalder/walkers with additional
   // reverse walk feature.
   if (wrap) {
     node = wrapper(node);
   }
   callback(node);
+  // eslint-disable-next-line no-prototype-builtins
   if (node.hasOwnProperty('children')) {
     if (reverse) {
       node.children.reverse();
@@ -113,46 +111,45 @@ function walkAst(node, callback, finish, { reverse = false, wrap = true }) {
     node = null;
   }
   while (node) {
-    walkAst(node, callback, false, { wrap: false, reverse });
+    walkAst(node, callback, false, {wrap: false, reverse});
     node = reverse ? node.prev : node.next;
   }
   if (typeof finish === 'function') {
     finish();
   }
-};
+}
 
-function transform(input, { format = 'unicode' } = {}) {
+function transform(input, {format = 'unicode'} = {}) {
   let data;
   const reverse = format === 'mirror';
-  var handler = new htmlparser.DomHandler((error, dom) => {
+  const handler = new htmlparser.DomHandler((error, dom) => {
     if (error) {
       console.error(error);
     } else {
-       walkAst(dom, (node) => {
-        if (node.type == 'text') {
-          node.data = transformText(node.data, { format });
+      walkAst(dom, (node) => {
+        if (node.type === 'text') {
+          node.data = transformText(node.data, {format});
         }
       }, () => {
         data = dom;
-      }, { reverse });
+      }, {reverse});
     }
   });
-  var parser = new htmlparser.Parser(handler);
+  const parser = new htmlparser.Parser(handler);
   parser.write(input);
   parser.done();
   return render(data);
 }
 
 function mirrorTransform(input) {
-  return transform(input, { format: 'mirror' });
+  return transform(input, {format: 'mirror'});
 }
 
 function unicodeTransform(input) {
-  return transform(input, { format: 'unicode' });
+  return transform(input, {format: 'unicode'});
 }
 
-
-function debugCommand(config, { _chalk = chalk, _process = process, _console = console } = {}) {
+function debugCommand(config, {_chalk = chalk, _process = process, _console = console} = {}) {
   const format = config.format;
   const isStdOut = config.output === 'stdout';
   let bar;
@@ -163,20 +160,20 @@ function debugCommand(config, { _chalk = chalk, _process = process, _console = c
           fps: 40,
           stopOnComplete: true,
           format: '[{bar}] {percentage}% | {value}/{total}',
-        }, prog.Presets.shades_grey)
+        }, prog.Presets.shades_grey);
         bar.start(po.items.length, 0);
       }
-      po.items.forEach((item, idx) => {
-        item.msgstr[0] = transform(item.msgid, { format });
+      po.items.forEach((item) => {
+        item.msgstr[0] = transform(item.msgid, {format});
         if (item.msgid_plural) {
-          item.msgstr[1] = transform(item.msgid_plural, { format });
+          item.msgstr[1] = transform(item.msgid_plural, {format});
         }
         if (bar && !isStdOut) {
           bar.increment(1);
         }
-      })
+      });
       if (isStdOut) {
-        return _process.stdout.write(po.toString());
+        _process.stdout.write(po.toString());
       } else {
         const save = promisify(po.save);
         return save(config.output);
