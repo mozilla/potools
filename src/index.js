@@ -175,8 +175,8 @@ function debugCommand(config, {_chalk = chalk, _process = process, _console = co
       if (isStdOut) {
         _process.stdout.write(po.toString());
       } else {
-        const save = promisify(po.save);
-        return save(config.output);
+        promisify(po);
+        return po.save(config.output);
       }
     })
     .catch((err) => {
