@@ -1,5 +1,11 @@
-var htmlparser = require('htmlparser2');
-var render = require('dom-serializer');
+const fs = require('fs');
+const path = require('path');
+
+const chalk = require('chalk');
+const htmlparser = require('htmlparser2');
+const prog = require('cli-progress');
+const PO = require('pofile');
+const render = require('dom-serializer');
 
 const unicodeFrom = 'ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz';
 const unicodeTo = 'ȦƁƇḒḖƑƓĦĪĴĶĿḾȠǾƤɊŘŞŦŬṼẆẊẎẐȧƀƈḓḗƒɠħīĵķŀḿƞǿƥɋřşŧŭṽẇẋẏẑ';
@@ -142,7 +148,37 @@ function unicodeTransform(input) {
 }
 
 function potools(config) {
-  console.log(config);
+  const po = new PO();
+  const format = config.format;
+  PO.load(config.potfile, (err, po) => {
+    if (err) {
+      console.log(chalk.red(err.message));
+      process.exit(1);
+    }
+    const bar = new prog.Bar({
+      fps: 20,
+      stopOnComplete: true,
+      format: '[{bar}] {percentage}% | {value}/{total}',
+    }, prog.Presets.shades_grey)
+    bar.start(po.items.length, 0);
+    po.items.forEach((item, idx) => {
+      item.msgstr[0] = transform(item.msgid, { format });
+      if (item.msgid_plural) {
+        item.msgstr[1] = transform(item.msgid_plural, { format });
+      }
+      bar.increment(1);
+    })
+    if (config.output === 'stdout') {
+      process.stdout.write(po.toString());
+    } else {
+      po.save(config.output, (err) => {
+        if (err) {
+          console.log(chalk.red(err.message));
+          process.exit(1);
+        }
+      });
+    }
+  });
 }
 
 module.exports = {
