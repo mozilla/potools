@@ -1,0 +1,9 @@
+#!/usr/bin/env node
+
+const args = require('yargs')
+  .usage('Usage: $0 --pot [potfile] --output [output] [--style unicode|mirror]' )
+  .demandOption(['potfile','output'])
+  .default('style', 'unicode')
+  .argv;
+
+require('../src').skadoosh(args);

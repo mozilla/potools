@@ -1,0 +1,30 @@
+{
+  "name": "skadoosh",
+  "version": "0.0.1",
+  "description": "Po file debug translation generator.",
+  "main": "index.js",
+  "scripts": {
+    "test": "jest",
+    "test-watch": "jest --watch",
+    "test-coverage": "jest --coverage"
+  },
+  "keywords": [
+    "po",
+    "i18n",
+    "l10n",
+    "gettext"
+  ],
+  "author": "Stuart Colville",
+  "license": "MPL-2.0",
+  "dependencies": {
+    "dom-serializer": "^0.1.0",
+    "htmlparser2": "^3.9.2",
+    "pofile": "^1.0.5",
+    "walkers": "^0.1.4",
+    "yargs": "^7.0.1"
+  },
+  "devDependencies": {
+    "chai": "^3.5.0",
+    "jest": "20.0.1"
+  }
+}
