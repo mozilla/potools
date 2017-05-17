@@ -1,0 +1,55 @@
+const debugCommand = require('../src/').debugCommand;
+const sinon = require('sinon');
+
+describe('debugCommand()', () => {
+  let fakeChalk;
+  let fakeConsole;
+  let faleProcess;
+
+  beforeEach(() => {
+    fakeProcess = {
+      exit: sinon.stub(),
+      stdout: {
+        write: sinon.stub(),
+      }
+    }
+
+    fakeChalk = {
+      red: sinon.stub(),
+    };
+
+    fakeConsole = {
+      log: sinon.stub(),
+    };
+  });
+
+  it('should call process.exit if pot file is invalid', () => {
+    return debugCommand({ potfile: 'whatever', format: 'unicode' }, { _chalk: fakeChalk, _process: fakeProcess, _console: fakeConsole })
+      .then(() => {
+        sinon.assert.calledWith(fakeProcess.exit, 1);
+        sinon.assert.calledWithMatch(fakeChalk.red, 'ENOENT');
+      });
+  });
+
+  it('should output unicode output', () => {
+    return debugCommand({ potfile: './tests/fixtures/source.pot', format: 'unicode', output: 'stdout' }, { _chalk: fakeChalk, _process: fakeProcess, _console: fakeConsole })
+      .then(() => {
+        sinon.assert.neverCalledWith(fakeProcess.exit, 1);
+        sinon.assert.calledWithMatch(fakeProcess.stdout.write, 'msgstr "Ẏǿŭ ȧřḗ ȧŀřḗȧḓẏ ŀǿɠɠḗḓ īƞ."');
+        sinon.assert.calledWithMatch(fakeProcess.stdout.write, 'msgstr[0] "Īƞṽȧŀīḓ ŧȧɠ: {0}"');
+        sinon.assert.calledWithMatch(fakeProcess.stdout.write, 'msgstr[1] "Īƞṽȧŀīḓ ŧȧɠş: {0}"');
+      });
+  });
+
+  it('should output mirror output', () => {
+    return debugCommand({ potfile: './tests/fixtures/source.pot', format: 'mirror', output: 'stdout' }, { _chalk: fakeChalk, _process: fakeProcess, _console: fakeConsole })
+      .then(() => {
+        sinon.assert.neverCalledWith(fakeProcess.exit, 1);
+        sinon.assert.calledWithMatch(fakeProcess.stdout.write, 'msgstr ".uı pǝƃƃoʅ ʎpɐǝɹʅɐ ǝɹɐ no⅄"');
+        sinon.assert.calledWithMatch(fakeProcess.stdout.write, 'msgstr[0] "{0} :ƃɐʇ pıʅɐʌuI"');
+        sinon.assert.calledWithMatch(fakeProcess.stdout.write, 'msgstr[1] "{0} :sƃɐʇ pıʅɐʌuI');
+      });
+  });
+});
+
+

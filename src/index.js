@@ -5,6 +5,10 @@ const chalk = require('chalk');
 const htmlparser = require('htmlparser2');
 const prog = require('cli-progress');
 const PO = require('pofile');
+
+const promisify = require('promisify-node');
+poLoad = promisify(PO.load);
+
 const render = require('dom-serializer');
 
 const unicodeFrom = 'ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz';
@@ -147,51 +151,48 @@ function unicodeTransform(input) {
   return transform(input, { format: 'unicode' });
 }
 
-function potools(config) {
-  const po = new PO();
+
+function debugCommand(config, { _chalk = chalk, _process = process, _console = console } = {}) {
   const format = config.format;
   const isStdOut = config.output === 'stdout';
   let bar;
-  PO.load(config.potfile, (err, po) => {
-    if (err) {
-      console.log(chalk.red(err.message));
-      process.exit(1);
-    }
-    if (!isStdOut) {
-      bar = new prog.Bar({
-        fps: 40,
-        stopOnComplete: true,
-        format: '[{bar}] {percentage}% | {value}/{total}',
-      }, prog.Presets.shades_grey)
-      bar.start(po.items.length, 0);
-    }
-    po.items.forEach((item, idx) => {
-      item.msgstr[0] = transform(item.msgid, { format });
-      if (item.msgid_plural) {
-        item.msgstr[1] = transform(item.msgid_plural, { format });
+  return poLoad(config.potfile)
+    .then((po) => {
+      if (!isStdOut) {
+        bar = new prog.Bar({
+          fps: 40,
+          stopOnComplete: true,
+          format: '[{bar}] {percentage}% | {value}/{total}',
+        }, prog.Presets.shades_grey)
+        bar.start(po.items.length, 0);
       }
-      if (bar && !isStdOut) {
-        bar.increment(1);
+      po.items.forEach((item, idx) => {
+        item.msgstr[0] = transform(item.msgid, { format });
+        if (item.msgid_plural) {
+          item.msgstr[1] = transform(item.msgid_plural, { format });
+        }
+        if (bar && !isStdOut) {
+          bar.increment(1);
+        }
+      })
+      if (isStdOut) {
+        return _process.stdout.write(po.toString());
+      } else {
+        const save = promisify(po.save);
+        return save(config.output);
       }
     })
-    if (isStdOut) {
-      process.stdout.write(po.toString());
-    } else {
-      po.save(config.output, (err) => {
-        if (err) {
-          console.log(chalk.red(err.message));
-          process.exit(1);
-        }
-      });
-    }
-  });
+    .catch((err) => {
+      _console.log(_chalk.red(err.message));
+      return _process.exit(1);
+    });
 }
 
 module.exports = {
-  potools: potools,
-  splitText: splitText,
-  unicode: unicode,
-  mirror: mirror,
-  unicodeTransform: unicodeTransform,
-  mirrorTransform: mirrorTransform,
+  debugCommand,
+  splitText,
+  unicode,
+  mirror,
+  unicodeTransform,
+  mirrorTransform,
 };

@@ -1,6 +1,8 @@
 #!/usr/bin/env node
 
-const args = require('yargs')
+const debug = require('../src').debugCommand;
+
+require('yargs')
   .command({
     command: 'debug <potfile> [output] [format]',
     desc: 'Generate debug ltr or rtl debug pofiles. The default format is unicode',
@@ -14,10 +16,10 @@ const args = require('yargs')
         default: 'stdout',
         desc: 'Output path. If not provided outputs to stdout',
       }
-    }
+    },
+    handler: debug,
   })
   .demandCommand()
+  .help()
   .wrap(80)
   .argv;
-
-require('../src').potools(args);
