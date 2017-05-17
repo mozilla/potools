@@ -150,25 +150,31 @@ function unicodeTransform(input) {
 function potools(config) {
   const po = new PO();
   const format = config.format;
+  const isStdOut = config.output === 'stdout';
+  let bar;
   PO.load(config.potfile, (err, po) => {
     if (err) {
       console.log(chalk.red(err.message));
       process.exit(1);
     }
-    const bar = new prog.Bar({
-      fps: 20,
-      stopOnComplete: true,
-      format: '[{bar}] {percentage}% | {value}/{total}',
-    }, prog.Presets.shades_grey)
-    bar.start(po.items.length, 0);
+    if (!isStdOut) {
+      bar = new prog.Bar({
+        fps: 40,
+        stopOnComplete: true,
+        format: '[{bar}] {percentage}% | {value}/{total}',
+      }, prog.Presets.shades_grey)
+      bar.start(po.items.length, 0);
+    }
     po.items.forEach((item, idx) => {
       item.msgstr[0] = transform(item.msgid, { format });
       if (item.msgid_plural) {
         item.msgstr[1] = transform(item.msgid_plural, { format });
       }
-      bar.increment(1);
+      if (bar && !isStdOut) {
+        bar.increment(1);
+      }
     })
-    if (config.output === 'stdout') {
+    if (isStdOut) {
       process.stdout.write(po.toString());
     } else {
       po.save(config.output, (err) => {
