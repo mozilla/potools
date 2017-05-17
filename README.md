@@ -46,3 +46,14 @@ potools debug ../bar/locale/templates/LC_MESSAGES/messages.pot --format mirror -
 ```
 
 Will write the ouptut to `../test.txt`.
+
+### Caveats 
+
+The RTL debug locale generation generally inverts input to emulates what an RTL translation will look like. 
+It will also handle HTML by reversing parts of HTML AST during processing in order to keep a sane order of elements 
+but reverse the order of text and HTML.
+
+When placeholders are used to substitute HTML, this will cause problems if the placeholders are inverted. To fix this placeholders that are prefixed with `start` or `end` and have a matching suffix will remain in their original placement 
+order.
+
+E.g. `foo %(startSpan)sbar%(endSpan)s` will become `%(startSpan)sɹɐq%(endSpan)s ooɟ` to preserve order.
