@@ -1,5 +1,4 @@
 var htmlparser = require('htmlparser2');
-var walkers = require('walkers');
 var render = require('dom-serializer');
 
 const unicodeFrom = 'ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz';
@@ -11,6 +10,7 @@ const mirrorTo = "ɐqɔpǝɟƃɥıɾʞʅɯuodbɹsʇnʌʍxʎz∀ԐↃᗡƎℲ⅁H
 // %(placeholder)s
 // %(placeholder)d
 // %s %d
+// {foo}
 const placeholderRx = /%\([\s\S]+?\)[sd]|%[sd]|\{\w+\}/g;
 
 function splitText(input) {
@@ -75,14 +75,6 @@ function transformText(input, { format = 'unicode' } = {}) {
   return string.join('');
 }
 
-function unicodeTransformText(input) {
-  return transformText(input, { format: 'unicode' });
-}
-
-function mirrorTransformText(input) {
-  return transformText(input, { format: 'mirror' });
-}
-
 function wrapper(node){
   return {
     name: 'wrapper',
@@ -117,15 +109,16 @@ function walkAst(node, callback, finish, { reverse = false, wrap = true }) {
   }
 };
 
-function transform(input, { reverse = false } = {}) {
+function transform(input, { format = 'unicode' } = {}) {
   let data;
+  const reverse = format === 'mirror';
   var handler = new htmlparser.DomHandler((error, dom) => {
     if (error) {
       console.error(error);
     } else {
        walkAst(dom, (node) => {
         if (node.type == 'text') {
-          node.data = reverse ? mirrorTransformText(node.data) : unicodeTransformText(node.data);
+          node.data = transformText(node.data, { format });
         }
       }, () => {
         data = dom;
@@ -139,19 +132,19 @@ function transform(input, { reverse = false } = {}) {
 }
 
 function mirrorTransform(input) {
-  return transform(input, { reverse: true });
+  return transform(input, { format: 'mirror' });
 }
 
 function unicodeTransform(input) {
-  return transform(input, { reverse: false });
+  return transform(input, { format: 'unicode' });
 }
 
-function skadoosh(config) {
+function potools(config) {
   console.log(config);
 }
 
 module.exports = {
-  skadoosh: skadoosh,
+  potools: potools,
   splitText: splitText,
   unicode: unicode,
   mirror: mirror,
