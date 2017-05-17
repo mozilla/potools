@@ -1,4 +1,5 @@
 [![Build Status](https://travis-ci.org/mozilla/potools.svg?branch=master)](https://travis-ci.org/mozilla/potools)
+[![npm version](https://badge.fury.io/js/potools.svg)](https://badge.fury.io/js/potools)
 
 # Potools
 
