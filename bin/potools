@@ -6,4 +6,4 @@ const args = require('yargs')
   .default('style', 'unicode')
   .argv;
 
-require('../src').skadoosh(args);
+require('../src').potools(args);

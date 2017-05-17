@@ -88,6 +88,8 @@ function wrapper(node){
 }
 
 function walkAst(node, callback, finish, { reverse = false, wrap = true }) {
+  // Based on https://github.com/jordancalder/walkers with additional
+  // reverse walk feature.
   if (wrap) {
     node = wrapper(node);
   }
