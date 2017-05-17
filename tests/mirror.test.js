@@ -29,4 +29,24 @@ describe('mirrorTransform()', () => {
     expect(mirrorTransform('foo <a href="#whatevs">bar <span>test</span></a>'))
       .toEqual('<a href="#whatevs"><span>ʇsǝʇ</span> ɹɐq</a> ooɟ');
   });
+
+  it('should not reverse placeholders that are prefixed with start and end', () => {
+    expect(mirrorTransform('foo %(startLink)sbar test%(endLink)s'))
+      .toEqual('%(startLink)sʇsǝʇ ɹɐq%(endLink)s ooɟ');
+  });
+
+  it('should not reverse brace placeholders that are prefixed with start and end', () => {
+    expect(mirrorTransform('foo {startLink}bar test{endLink}'))
+      .toEqual('{startLink}ʇsǝʇ ɹɐq{endLink} ooɟ');
+  });
+
+  it('should touch a single placeholder that has a start prefix with a matching end', () => {
+    expect(mirrorTransform('foo %(startSomething)sbar test'))
+      .toEqual('ʇsǝʇ ɹɐq%(startSomething)s ooɟ');
+  });
+
+  it('should handle a single placeholder named "start"', () => {
+    expect(mirrorTransform('foo %(start)sbar test'))
+      .toEqual('ʇsǝʇ ɹɐq%(start)s ooɟ');
+  });
 });

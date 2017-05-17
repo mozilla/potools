@@ -18,7 +18,7 @@ const mirrorTo = 'ɐqɔpǝɟƃɥıɾʞʅɯuodbɹsʇnʌʍxʎz∀ԐↃᗡƎℲ⅁H
 // %(placeholder)d
 // %s %d
 // {foo}
-const placeholderRx = /%\([\s\S]+?\)[sd]|%[sd]|\{\w+\}/g;
+const placeholderRx = /(?:%\(|\{)([\S]+?)(?:\}|\)[sd])|%[sd]/g;
 
 function splitText(input) {
   const parts = [];
@@ -30,7 +30,7 @@ function splitText(input) {
       parts.push({value: input.substr(pos, match.index - pos), type: 'text'});
     }
     // Push the matching parts piece on the parts array.
-    parts.push({value: match[0], type: 'placeholder'});
+    parts.push({value: match[0], type: 'placeholder', name: match[1]});
     pos = match.index + match[0].length;
   }
   if (pos < input.length) {
@@ -69,15 +69,39 @@ function unicode(inputString) {
 function transformText(input, {format = 'unicode'} = {}) {
   const tokens = splitText(input);
   const string = [];
+  const swaps = {};
+
   for (const token of tokens) {
     if (token.type === 'text') {
       string.push(format === 'unicode' ? unicode(token.value) : mirror(token.value));
     } else {
+      // Store tokens that have named placeholders that are prefixed with 'start' or 'end'.
+      if (format === 'mirror' && token.type === 'placeholder' && token.name) {
+        if (token.name.startsWith('start') && token.name.length > 5) {
+          swaps[token.name.replace(/^start/, '')] = {start: token};
+        }
+        if (token.name.startsWith('end') && token.name.length > 3) {
+          const endSuffix = token.name.replace(/^end/, '');
+          swaps[endSuffix] = Object.assign({}, swaps[endSuffix] || {}, {end: token});
+        }
+      }
       string.push(token.value);
     }
   }
+
   if (format === 'mirror') {
     string.reverse();
+    // Reverse start/end prefixed placholders to maintain order.
+    Object.keys(swaps).forEach((key) => {
+      const swap = swaps[key];
+      if (swap.start && swap.end) {
+        const startIdx = string.indexOf(swap.start.value);
+        const endIdx = string.indexOf(swap.end.value);
+        const oldStart = string[startIdx];
+        string[startIdx] = string[endIdx];
+        string[endIdx] = oldStart;
+      }
+    });
   }
   return string.join('');
 }

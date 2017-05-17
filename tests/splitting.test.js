@@ -5,7 +5,7 @@ describe('splitText()', () => {
     expect(splitText('foo %(whatever)s'))
       .toEqual([
         {value: 'foo ', type: 'text'},
-        {value: '%(whatever)s', type: 'placeholder'},
+        {value: '%(whatever)s', type: 'placeholder', name: 'whatever'},
       ]);
   });
 

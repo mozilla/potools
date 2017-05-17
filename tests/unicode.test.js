@@ -27,4 +27,9 @@ describe('unicode()', () => {
   it('should not mangle a word wrapped with square brackets', () => {
     expect(unicodeTransform('Square braces should [work]')).toEqual('Şɋŭȧřḗ ƀřȧƈḗş şħǿŭŀḓ [ẇǿřķ]');
   });
+
+  it('should not change placeholders that are prefixed with start and end', () => {
+    expect(unicodeTransform('foo %(startLink)sbar test%(endLink)s'))
+      .toEqual('ƒǿǿ %(startLink)sƀȧř ŧḗşŧ%(endLink)s');
+  });
 });
