@@ -53,7 +53,9 @@ The RTL debug locale generation generally inverts input to emulates what an RTL 
 It will also handle HTML by reversing parts of HTML AST during processing in order to keep a sane order of elements 
 but reverse the order of text and HTML.
 
+E.g: `foo <a href="#whatevs">bar <span>test</span></a>` becomes `<a href="#whatevs"><span>ʇsǝʇ</span> ɹɐq</a> ooɟ`.
+
 When placeholders are used to substitute HTML, this will cause problems if the placeholders are inverted. To fix this placeholders that are prefixed with `start` or `end` and have a matching suffix will remain in their original placement 
 order.
 
-E.g. `foo %(startSpan)sbar%(endSpan)s` will become `%(startSpan)sɹɐq%(endSpan)s ooɟ` to preserve order.
+E.g: `foo %(startSpan)sbar%(endSpan)s` will become `%(startSpan)sɹɐq%(endSpan)s ooɟ` to preserve order.
