@@ -49,7 +49,7 @@ Will write the ouptut to `../test.txt`.
 
 ### Caveats 
 
-The RTL debug locale generation generally inverts input to emulates what an RTL translation will look like. 
+The RTL debug locale generation (`--format mirror`) generally inverts input to emulate what an RTL translation will look like. 
 It will also handle HTML by reversing parts of HTML AST during processing in order to keep a sane order of elements 
 but reverse the order of text and HTML.
 
