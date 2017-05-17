@@ -1,3 +1,5 @@
+[![Build Status](https://travis-ci.org/mozilla/potools.svg?branch=master)](https://travis-ci.org/mozilla/potools)
+
 # Potools
 
 A simple CLI utility to provide assistance with po-file based translations
