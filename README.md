@@ -4,7 +4,7 @@ A simple CLI utility to provide assistance with po-file based translations
 
 ## Commands
 
-###debug
+### debug
 
 This command helps write out debug versions of pofile contents. It is both HTML
 and placeholder aware.
