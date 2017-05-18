@@ -3,6 +3,8 @@
 
 # Potools
 
+[![Greenkeeper badge](https://badges.greenkeeper.io/mozilla/potools.svg)](https://greenkeeper.io/)
+
 A simple CLI utility to provide assistance with po-file based translations
 
 ## Installation
