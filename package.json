@@ -26,9 +26,9 @@
     "cli-progress": "^1.4.1",
     "dom-serializer": "0.1.0",
     "htmlparser2": "3.9.2",
-    "pofile": "1.0.5",
+    "pofile": "1.0.8",
     "promisify-node": "^0.4.0",
-    "yargs": "7.0.1"
+    "yargs": "8.0.1"
   },
   "devDependencies": {
     "jest": "^20.0.1",
