@@ -49,6 +49,11 @@ describe('mirrorTransform()', () => {
       .toEqual('ʇsǝʇ ɹɐq%(startSomething)s ooɟ');
   });
 
+  it('should only reverse children with a mix of text and HTML', () => {
+    expect(mirrorTransform('<h1>Heading</h1><ul><li>List item 1</li><li>List item <span>2</span></li></ul>'))
+      .toEqual('<h1>ƃuıpɐǝH</h1><ul><li>1 ɯǝʇı ʇsı⅂</li><li><span>2</span> ɯǝʇı ʇsı⅂</li></ul>');
+  });
+
   it('should handle a single placeholder named "start"', () => {
     expect(mirrorTransform('foo %(start)sbar test'))
       .toEqual('ʇsǝʇ ɹɐq%(start)s ooɟ');

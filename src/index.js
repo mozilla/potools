@@ -129,7 +129,16 @@ function walkAst(node, callback, finish, {reverse = false, wrap = true} = {}) {
   // eslint-disable-next-line no-prototype-builtins
   if (node.hasOwnProperty('children')) {
     if (reverse) {
-      node.children.reverse();
+      const hasTextNodeChildren = node.children.some((child) => {
+        return child.type === 'text';
+      });
+      if (hasTextNodeChildren) {
+        node.children.reverse();
+        // eslint-disable-next-line  array-callback-return
+        node.children.map((child) => {
+          child.poToolsReverse = true;
+        });
+      }
     }
     node = node.children[0];
   } else {
@@ -137,7 +146,7 @@ function walkAst(node, callback, finish, {reverse = false, wrap = true} = {}) {
   }
   while (node) {
     walkAst(node, callback, false, {wrap: false, reverse});
-    node = reverse ? node.prev : node.next;
+    node = reverse && node.poToolsReverse === true ? node.prev : node.next;
   }
   if (typeof finish === 'function') {
     finish();
