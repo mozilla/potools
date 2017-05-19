@@ -20,6 +20,7 @@ const mirrorTo = 'ɐqɔpǝɟƃɥıɾʞʅɯuodbɹsʇnʌʍxʎz∀ԐↃᗡƎℲ⅁H
 // {foo}
 // HTML entities e.g: &nbsp;
 const placeholderRx = /(?:%\(|\{)([\S]+?)(?:\}|\)[sd])|%[sd]|&[^\s]+?;/g;
+const whitespaceRx = /^\s+$/m;
 
 function splitText(input) {
   const parts = [];
@@ -130,7 +131,8 @@ function walkAst(node, callback, finish, {reverse = false, wrap = true} = {}) {
   if (node.hasOwnProperty('children')) {
     if (reverse) {
       const hasTextNodeChildren = node.children.some((child) => {
-        return child.type === 'text';
+        // Only return true if text node and not just whitespace.
+        return child.type === 'text' && whitespaceRx.test(child.data) === false;
       });
       if (hasTextNodeChildren) {
         node.children.reverse();
@@ -162,7 +164,8 @@ function transform(input, {format = 'unicode'} = {}) {
     } else {
       walkAst(dom, (node) => {
         if (node.type === 'text') {
-          node.data = transformText(node.data, {format});
+          // Don't reverse pure whitespace.
+          node.data = whitespaceRx.test(node.data) === false ? transformText(node.data, {format}) : node.data;
         }
       }, () => {
         data = dom;
