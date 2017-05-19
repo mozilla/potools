@@ -25,6 +25,10 @@ describe('mirrorTransform()', () => {
     expect(mirrorTransform('foo <a href="#whatevs">bar</a>')).toEqual('<a href="#whatevs">ɹɐq</a> ooɟ');
   });
 
+  it('should not reverse entities', () => {
+    expect(mirrorTransform('foo &nbsp;<a href="#whatevs">bar</a>')).toEqual('<a href="#whatevs">ɹɐq</a>&nbsp; ooɟ');
+  });
+
   it('should not mangle more complex HTML', () => {
     expect(mirrorTransform('foo <a href="#whatevs">bar <span>test</span></a>'))
       .toEqual('<a href="#whatevs"><span>ʇsǝʇ</span> ɹɐq</a> ooɟ');

@@ -18,7 +18,8 @@ const mirrorTo = 'ɐqɔpǝɟƃɥıɾʞʅɯuodbɹsʇnʌʍxʎz∀ԐↃᗡƎℲ⅁H
 // %(placeholder)d
 // %s %d
 // {foo}
-const placeholderRx = /(?:%\(|\{)([\S]+?)(?:\}|\)[sd])|%[sd]/g;
+// HTML entities e.g: &nbsp;
+const placeholderRx = /(?:%\(|\{)([\S]+?)(?:\}|\)[sd])|%[sd]|&[^\s]+?;/g;
 
 function splitText(input) {
   const parts = [];
