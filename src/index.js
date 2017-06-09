@@ -2,7 +2,6 @@ const chalk = require('chalk');
 const htmlparser = require('htmlparser2');
 const prog = require('cli-progress');
 const PO = require('pofile');
-
 const promisify = require('promisify-node');
 const render = require('dom-serializer');
 
@@ -26,17 +25,28 @@ function splitText(input) {
   const parts = [];
   let pos = 0;
   let match;
+  // eslint-disable-next-line no-cond-assign
   while ((match = placeholderRx.exec(input)) !== null) {
     if (pos < match.index) {
       // Push the non-matching string into the list.
-      parts.push({value: input.substr(pos, match.index - pos), type: 'text'});
+      parts.push({
+        type: 'text',
+        value: input.substr(pos, match.index - pos),
+      });
     }
     // Push the matching parts piece on the parts array.
-    parts.push({value: match[0], type: 'placeholder', name: match[1]});
+    parts.push({
+      name: match[1],
+      type: 'placeholder',
+      value: match[0],
+    });
     pos = match.index + match[0].length;
   }
   if (pos < input.length) {
-    parts.push({value: input.substr(pos, input.length - pos), type: 'text'});
+    parts.push({
+      type: 'text',
+      value: input.substr(pos, input.length - pos),
+    });
   }
   return parts;
 }
@@ -68,11 +78,12 @@ function unicode(inputString) {
   return trans;
 }
 
-function transformText(input, {format = 'unicode'} = {}) {
+function transformText(input, { format = 'unicode' } = {}) {
   const tokens = splitText(input);
   const string = [];
   const swaps = {};
 
+  // eslint-disable-next-line no-restricted-syntax
   for (const token of tokens) {
     if (token.type === 'text') {
       string.push(format === 'unicode' ? unicode(token.value) : mirror(token.value));
@@ -80,11 +91,11 @@ function transformText(input, {format = 'unicode'} = {}) {
       // Store tokens that have named placeholders that are prefixed with 'start' or 'end'.
       if (format === 'mirror' && token.type === 'placeholder' && token.name) {
         if (token.name.startsWith('start') && token.name.length > 5) {
-          swaps[token.name.replace(/^start/, '')] = {start: token};
+          swaps[token.name.replace(/^start/, '')] = { start: token };
         }
         if (token.name.startsWith('end') && token.name.length > 3) {
           const endSuffix = token.name.replace(/^end/, '');
-          swaps[endSuffix] = Object.assign({}, swaps[endSuffix] || {}, {end: token});
+          swaps[endSuffix] = Object.assign({}, swaps[endSuffix] || {}, { end: token });
         }
       }
       string.push(token.value);
@@ -120,10 +131,11 @@ function wrapper(node) {
   };
 }
 
-function walkAst(node, callback, finish, {reverse = false, wrap = true} = {}) {
+function walkAst(node, callback, finish, { reverse = false, wrap = true } = {}) {
   // Based on https://github.com/jordancalder/walkers with additional
   // reverse walk feature.
   if (wrap) {
+    // eslint-disable-next-line no-param-reassign
     node = wrapper(node);
   }
   callback(node);
@@ -138,16 +150,20 @@ function walkAst(node, callback, finish, {reverse = false, wrap = true} = {}) {
         node.children.reverse();
         // eslint-disable-next-line  array-callback-return
         node.children.map((child) => {
+          // eslint-disable-next-line no-param-reassign
           child.poToolsReverse = true;
         });
       }
     }
+    // eslint-disable-next-line no-param-reassign
     node = node.children[0];
   } else {
+    // eslint-disable-next-line no-param-reassign
     node = null;
   }
   while (node) {
-    walkAst(node, callback, false, {wrap: false, reverse});
+    walkAst(node, callback, false, { wrap: false, reverse });
+    // eslint-disable-next-line no-param-reassign
     node = reverse && node.poToolsReverse === true ? node.prev : node.next;
   }
   if (typeof finish === 'function') {
@@ -155,21 +171,25 @@ function walkAst(node, callback, finish, {reverse = false, wrap = true} = {}) {
   }
 }
 
-function transform(input, {format = 'unicode'} = {}) {
+function transform(input, { format = 'unicode' } = {}) {
   let data;
   const reverse = format === 'mirror';
   const handler = new htmlparser.DomHandler((error, dom) => {
     if (error) {
+      // eslint-disable-next-line no-console
       console.error(error);
     } else {
       walkAst(dom, (node) => {
         if (node.type === 'text') {
           // Don't reverse pure whitespace.
-          node.data = whitespaceRx.test(node.data) === false ? transformText(node.data, {format}) : node.data;
+          // eslint-disable-next-line no-param-reassign
+          node.data = whitespaceRx.test(node.data) === false ?
+            transformText(node.data, { format }) : node.data;
         }
       }, () => {
+        // eslint-disable-next-line no-param-reassign
         data = dom;
-      }, {reverse});
+      }, { reverse });
     }
   });
   const parser = new htmlparser.Parser(handler);
@@ -179,18 +199,19 @@ function transform(input, {format = 'unicode'} = {}) {
 }
 
 function mirrorTransform(input) {
-  return transform(input, {format: 'mirror'});
+  return transform(input, { format: 'mirror' });
 }
 
 function unicodeTransform(input) {
-  return transform(input, {format: 'unicode'});
+  return transform(input, { format: 'unicode' });
 }
 
-function debugCommand(config, {_chalk = chalk, _process = process, _console = console} = {}) {
+function debugCommand(config, { _chalk = chalk, _process = process, _console = console } = {}) {
   const format = config.format;
   const isStdOut = config.output === 'stdout';
   let bar;
   return poLoad(config.potfile)
+    // eslint-disable-next-line consistent-return
     .then((po) => {
       if (!isStdOut) {
         bar = new prog.Bar({
@@ -201,9 +222,11 @@ function debugCommand(config, {_chalk = chalk, _process = process, _console = co
         bar.start(po.items.length, 0);
       }
       po.items.forEach((item) => {
-        item.msgstr[0] = transform(item.msgid, {format});
+        // eslint-disable-next-line no-param-reassign
+        item.msgstr[0] = transform(item.msgid, { format });
         if (item.msgid_plural) {
-          item.msgstr[1] = transform(item.msgid_plural, {format});
+          // eslint-disable-next-line no-param-reassign
+          item.msgstr[1] = transform(item.msgid_plural, { format });
         }
         if (bar && !isStdOut) {
           bar.increment(1);
