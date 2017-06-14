@@ -8,9 +8,10 @@
     "potools": "bin/potools"
   },
   "scripts": {
-    "test": "xo && jest",
-    "test-watch": "jest --watch",
-    "test-coverage": "jest --coverage"
+    "test": "jest --watch",
+    "lint": "eslint .",
+    "test-coverage": "jest --coverage",
+    "test-ci": "jest && npm run lint"
   },
   "keywords": [
     "po",
@@ -25,33 +26,15 @@
     "chalk": "^1.1.3",
     "cli-progress": "^1.4.1",
     "dom-serializer": "0.1.0",
+    "eslint-config-amo": "^0.0.1",
     "htmlparser2": "3.9.2",
     "pofile": "1.0.8",
     "promisify-node": "^0.4.0",
     "yargs": "8.0.1"
   },
   "devDependencies": {
+    "eslint": "^3.19.0",
     "jest": "^20.0.1",
-    "sinon": "^2.2.0",
-    "xo": "^0.18.2"
-  },
-  "xo": {
-    "space": "true",
-    "globals": [
-      "beforeEach",
-      "describe",
-      "expect",
-      "it"
-    ],
-    "rules": {
-      "arrow-parens": ["error", "always"],
-      "comma-dangle": ["error", {
-        "arrays": "always-multiline",
-        "objects": "always-multiline",
-        "imports": "always-multiline",
-        "exports": "always-multiline",
-        "functions": "ignore"
-      }]
-    }
+    "sinon": "^2.2.0"
   }
 }

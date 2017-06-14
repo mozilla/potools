@@ -61,7 +61,7 @@ describe('mirrorTransform()', () => {
 
   it('should only reverse children if contain textNodes without whitespace and newline', () => {
     expect(mirrorTransform('<h1>Heading</h1>\n <ul><li>List item 1</li><li>List item <span>2</span></li></ul>'))
-      .toEqual(`<h1>ƃuıpɐǝH</h1>\n <ul><li>1 ɯǝʇı ʇsı⅂</li><li><span>2</span> ɯǝʇı ʇsı⅂</li></ul>`);
+      .toEqual('<h1>ƃuıpɐǝH</h1>\n <ul><li>1 ɯǝʇı ʇsı⅂</li><li><span>2</span> ɯǝʇı ʇsı⅂</li></ul>');
   });
 
   it('should handle a single placeholder named "start"', () => {
