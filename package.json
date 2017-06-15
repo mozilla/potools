@@ -30,7 +30,7 @@
     "htmlparser2": "3.9.2",
     "pofile": "1.0.8",
     "promisify-node": "^0.4.0",
-    "yargs": "8.0.1"
+    "yargs": "8.0.2"
   },
   "devDependencies": {
     "eslint": "^3.19.0",
