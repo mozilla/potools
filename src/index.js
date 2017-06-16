@@ -12,13 +12,16 @@ const unicodeTo = 'ȦƁƇḒḖƑƓĦĪĴĶĿḾȠǾƤɊŘŞŦŬṼẆẊẎẐ�
 const mirrorFrom = 'abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789!@#$%^&*()-_=+\\|`~[{]};:\'",<.>/?';
 const mirrorTo = 'ɐqɔpǝɟƃɥıɾʞʅɯuodbɹsʇnʌʍxʎz∀ԐↃᗡƎℲ⅁HIſӼ⅂WNOԀÒᴚS⊥∩ɅＭX⅄Z0123456789¡@#$%ᵥ⅋⁎)(-_=+\\|,~]}[{;:,„´>.</¿';
 
-// Currently matches:
-// %(placeholder)s
-// %(placeholder)d
-// %s %d
-// {foo}
+// Match simple sprintf placholders eg: %(placeholder)s, {foo}
+const sprintfRx = /(?:%\(|\{)([\S]+?)(?:\}|\)[sd]{1})/;
+// Match simple placeholders %s %d
+const percentRx = /%[sd]{1}/;
+// Match dates - E.g. %%Y-%%m-%%d
+const dateRx = /%%-?[a-zA-Z]{1}-%%-?[a-zA-Z]{1}-%%-?[a-zA-Z]{1}/;
 // HTML entities e.g: &nbsp;
-const placeholderRx = /(?:%\(|\{)([\S]+?)(?:\}|\)[sd])|%[sd]|&[^\s]+?;/g;
+const htmlEntityRx = /&[^\s]+?;/;
+
+const placeholderRx = new RegExp(`${sprintfRx.source}|${percentRx.source}|${dateRx.source}|${htmlEntityRx.source}`, 'g');
 const whitespaceRx = /^\s+$/m;
 
 function splitText(input) {
