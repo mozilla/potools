@@ -10,6 +10,10 @@ describe('unicode()', () => {
     expect(unicodeTransform('foo %(whatever)s')).toEqual('ƒǿǿ %(whatever)s');
   });
 
+  it('should not mangle a date placeholder', () => {
+    expect(unicodeTransform('foo %%Y-%%m-%%d')).toEqual('ƒǿǿ %%Y-%%m-%%d');
+  });
+
   it('should not mangle HTML', () => {
     expect(unicodeTransform('foo <a href="#whatevs">bar</a>')).toEqual('ƒǿǿ <a href="#whatevs">ƀȧř</a>');
   });

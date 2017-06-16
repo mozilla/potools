@@ -13,6 +13,10 @@ describe('mirrorTransform()', () => {
     expect(mirrorTransform('foo %(whatever)s')).toEqual('%(whatever)s ooɟ');
   });
 
+  it('should not mangle a date placeholder', () => {
+    expect(mirrorTransform('foo %%Y-%%m-%%d')).toEqual('%%Y-%%m-%%d ooɟ');
+  });
+
   it('should not mangle a curly brace placeholder', () => {
     expect(mirrorTransform('Abuse Reports for {addon} ({num})')).toEqual('({num}) {addon} ɹoɟ sʇɹodǝᴚ ǝsnq∀');
   });
