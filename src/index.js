@@ -235,6 +235,15 @@ function debugCommand(config, { _chalk = chalk, _process = process, _console = c
           bar.increment(1);
         }
       });
+
+      // Make sure we are setting proper plural forms. This fixes various
+      // issues with gnu gettext. See
+      // https://github.com/mozilla/potools/issues/7 for more details.
+      if (po.headers && !po.headers['Plural-Forms']) {
+        // eslint-disable-next-line no-param-reassign
+        po.headers['Plural-Forms'] = 'nplurals=2; plural=(n != 1);';
+      }
+
       if (isStdOut) {
         _process.stdout.write(po.toString());
       } else {

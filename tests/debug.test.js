@@ -51,4 +51,12 @@ describe('debugCommand()', () => {
         sinon.assert.calledWithMatch(fakeProcess.stdout.write, 'msgstr[1] "{0} :sƃɐʇ pıʅɐʌuI');
       });
   });
+
+  it('should set plural forms if none are provided', () => {
+    return debugCommand({ potfile: './tests/fixtures/source.pot', format: 'unicode', output: 'stdout' }, { _chalk: fakeChalk, _process: fakeProcess, _console: fakeConsole })
+      .then(() => {
+        sinon.assert.neverCalledWith(fakeProcess.exit, 1);
+        sinon.assert.calledWithMatch(fakeProcess.stdout.write, '"Plural-Forms: nplurals=2; plural=(n != 1);\\n"');
+      });
+  });
 });

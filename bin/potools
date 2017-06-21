@@ -15,7 +15,7 @@ require('yargs')
       output: {
         default: 'stdout',
         desc: 'Output path. If not provided outputs to stdout',
-      }
+      },
     },
     handler: debug,
   })
