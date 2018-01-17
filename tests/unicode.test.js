@@ -1,5 +1,4 @@
-const unicode = require('../src/').unicode;
-const unicodeTransform = require('../src/').unicodeTransform;
+const { unicode, unicodeTransform } = require('../src/');
 
 describe('unicode()', () => {
   it('should return a unicode string', () => {

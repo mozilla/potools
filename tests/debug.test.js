@@ -1,6 +1,6 @@
 const sinon = require('sinon');
 
-const debugCommand = require('../src/').debugCommand;
+const { debugCommand } = require('../src/');
 
 describe('debugCommand()', () => {
   let fakeChalk;
