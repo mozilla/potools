@@ -158,7 +158,7 @@ function walkAst(node, callback, finish, { reverse = false, wrap = true } = {}) 
         });
       }
     }
-    // eslint-disable-next-line no-param-reassign
+    // eslint-disable-next-line no-param-reassign, prefer-destructuring
     node = node.children[0];
   } else {
     // eslint-disable-next-line no-param-reassign
@@ -210,7 +210,7 @@ function unicodeTransform(input) {
 }
 
 function debugCommand(config, { _chalk = chalk, _process = process, _console = console } = {}) {
-  const format = config.format;
+  const { format } = config;
   const isStdOut = config.output === 'stdout';
   let bar;
   return poLoad(config.potfile)

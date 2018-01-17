@@ -1,4 +1,4 @@
-const splitText = require('../src/').splitText;
+const { splitText } = require('../src/');
 
 describe('splitText()', () => {
   it('splits placeholders', () => {

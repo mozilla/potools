@@ -1,4 +1,4 @@
-const mirrorTransform = require('../src/').mirrorTransform;
+const { mirrorTransform } = require('../src/');
 
 describe('mirrorTransform()', () => {
   it('should return a mirrorTransformed string', () => {
