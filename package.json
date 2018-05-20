@@ -24,7 +24,7 @@
   "license": "MPL-2.0",
   "dependencies": {
     "chalk": "^2.0.1",
-    "cli-progress": "^1.4.1",
+    "cli-progress": "^2.0.0",
     "dom-serializer": "0.1.0",
     "eslint-config-amo": "^1.1.0",
     "htmlparser2": "3.9.2",
