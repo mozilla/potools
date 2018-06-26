@@ -33,7 +33,7 @@
     "yargs": "10.1.1"
   },
   "devDependencies": {
-    "eslint": "^4.9.0",
+    "eslint": "^5.0.1",
     "jest": "^22.1.1",
     "sinon": "^4.0.0"
   }
