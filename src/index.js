@@ -186,8 +186,8 @@ function transform(input, { format = 'unicode' } = {}) {
         if (node.type === 'text') {
           // Don't reverse pure whitespace.
           // eslint-disable-next-line no-param-reassign
-          node.data = whitespaceRx.test(node.data) === false ?
-            transformText(node.data, { format }) : node.data;
+          node.data = whitespaceRx.test(node.data) === false
+            ? transformText(node.data, { format }) : node.data;
         }
       }, () => {
         // eslint-disable-next-line no-param-reassign

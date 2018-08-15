@@ -26,14 +26,14 @@
     "chalk": "^2.0.1",
     "cli-progress": "^2.0.0",
     "dom-serializer": "0.1.0",
-    "eslint-config-amo": "^1.1.0",
+    "eslint-config-amo": "^1.8.0",
     "htmlparser2": "3.9.2",
     "pofile": "1.0.11",
     "promisify-node": "^0.4.0",
     "yargs": "12.0.1"
   },
   "devDependencies": {
-    "eslint": "^5.0.1",
+    "eslint": "^5.3.0",
     "jest": "^22.1.1",
     "sinon": "^6.0.1"
   }
