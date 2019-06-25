@@ -28,7 +28,7 @@
     "dom-serializer": "0.1.0",
     "eslint-config-amo": "^1.8.0",
     "htmlparser2": "3.9.2",
-    "pofile": "1.0.11",
+    "pofile": "1.1.0",
     "promisify-node": "^0.4.0",
     "yargs": "12.0.1"
   },
