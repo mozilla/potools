@@ -1,3 +1,5 @@
+ [![No Maintenance Intended](http://unmaintained.tech/badge.svg)](http://unmaintained.tech/)
+
 # Potools
 
 [![Build Status](https://travis-ci.org/mozilla/potools.svg?branch=master)](https://travis-ci.org/mozilla/potools)
